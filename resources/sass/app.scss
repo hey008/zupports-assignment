@@ -18,3 +18,16 @@
     display: flex;
     width: 100%;
 }
+
+.text-suggest {
+    position: absolute;
+    margin-top: 3rem;
+    z-index: 10;
+    color: #FFFFFF;
+    background-color: #2f4f4f;
+    width: 100%;
+
+    .item:hover {
+        background-color: #000000;
+    }
+}

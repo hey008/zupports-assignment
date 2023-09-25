@@ -1,7 +1,12 @@
+<script setup>
+    import TextSeatch from './components/TextSearch.vue';
+</script>
 <template>
     <nav class="navbar navbar-dark bg-dark sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand">Zupports Assignment</a>
+        <div class="container-fluid d-flex flex-nowrap">
+            <a class="navbar-brand d-block d-md-none">Z</a>
+            <a class="navbar-brand d-none d-md-block">Zupports Assignment</a>
+            <TextSeatch />
         </div>
     </nav>
 
