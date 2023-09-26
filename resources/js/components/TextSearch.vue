@@ -31,7 +31,6 @@ import store from '../store';
 
 export default {
     mounted () {
-        console.log('TextSearch Mounted.')
         this.construct();
     },
     setup() {

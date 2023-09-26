@@ -15,6 +15,7 @@
                 </div>
             </div>
         </div>
+        <div v-show="errorDisplay" class="alert alert-danger" role="alert">Sorry! Something went wrong</div>
     </div>
 </template>
 
@@ -41,6 +42,7 @@ export default {
     },
     setup () {
         let loading = ref(false);
+        let errorDisplay = ref(false);
         let results = ref([]);
         const store = useStore();
 
@@ -49,6 +51,8 @@ export default {
         }
 
         async function fetchData(txt) {
+            errorDisplay.value = false;
+
             openLoading()
 
             var formdata = new FormData();
@@ -62,7 +66,7 @@ export default {
             await fetch(import.meta.env.VITE_API_URL + "/api/restaurant/search", requestOptions)
                 .then(response => response.text())
                 .then(result => render(result))
-                .catch(error => console.log('error', error));
+                .catch(error => { errorDisplay.value = true; } );
             
             closeLoading();
         }
@@ -76,13 +80,12 @@ export default {
             }
 
             let jsonResponse = JSON.parse(response);
-            console.log(jsonResponse.data.results);
             results.value = jsonResponse.data.results;
         }
 
         return {
             construct, fetchData,
-            loading, openLoading, closeLoading,
+            loading, openLoading, closeLoading, errorDisplay,
             render, results
         }
     }

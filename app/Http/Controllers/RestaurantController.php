@@ -32,12 +32,22 @@ class RestaurantController extends Controller
             //$apiURL .= "&radius=5000";
             
             $response = Http::get($apiURL);
-            //dd($response);
-            $data = json_decode($response->body(), true);
+            
+            if ($response->successful()) {
+                $data = json_decode($response->body(), true);
+
+                if (isset($data['status']) && $data['status'] == "OK") {
+                    return [
+                        'status'=> 200,
+                        'data'=>$data
+                    ];
+                }
+            }
 
             return [
-                'status'=> 200,
-                'data'=>$data
+                'status' => 500,
+                'errorMsg'=>"Keyword is required", 
+                'errors' => $e->getMessage(),
             ];
         } catch (ConnectionException $e) {
             $LOG->response = "ERROR";
