@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class RestaurantController extends Controller
 {
@@ -20,6 +22,16 @@ class RestaurantController extends Controller
                 'errorMsg'=>"Keyword is required", 
                 'errors'=>$validator->errors()
             ], 400);
+        }
+
+        $cacheKey = Str::slug($request->keyword);
+
+        if (Cache::has($cacheKey)) {
+            return [
+                'status'=> 200,
+                'source'=>"cached",
+                'data'=> Cache::get($cacheKey)
+            ];
         }
 
         try {
@@ -37,8 +49,10 @@ class RestaurantController extends Controller
                 $data = json_decode($response->body(), true);
 
                 if (isset($data['status']) && $data['status'] == "OK") {
+                    Cache::put($cacheKey, $data, env('CACHE_EXPIRED', now()->addMinutes(10)));
                     return [
                         'status'=> 200,
+                        'source'=>"live",
                         'data'=>$data
                     ];
                 }
