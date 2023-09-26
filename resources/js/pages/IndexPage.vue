@@ -1,7 +1,12 @@
 <template>
     <div class="container-fluid mb-3">
-        <h3 v-show="textSearch.length" class="mt-3">Search result of "{{ textSearch }}"</h3>
-        <div v-show="loading">LOADING....</div>
+        <h3 v-if="textSearch.length" class="mt-3">Search result of "{{ textSearch }}"</h3>
+        <div v-if="loading" class="d-flex mt-3">
+            <div class="spinner-border me-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h2>LOADING....</h2>
+        </div>
         <div v-if="results.length" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-6 g-4 my-2">
             <div 
                 v-for="result in results" 
@@ -18,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div v-show="errorDisplay" class="alert alert-danger" role="alert">Sorry! Something went wrong</div>
+        <div v-if="errorDisplay" class="alert alert-danger" role="alert">Sorry! Something went wrong</div>
     </div>
 
     <div class="modal fade" :class="{ show:isModalOpen }">
@@ -40,7 +45,7 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useStore, mapGetters } from 'vuex';
 import { GoogleMap, Marker } from "vue3-google-map";
 
