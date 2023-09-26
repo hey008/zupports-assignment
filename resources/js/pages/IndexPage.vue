@@ -29,7 +29,7 @@
                     <button class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeMap()"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <GoogleMap api-key="AIzaSyBOivj6tthdx0Kx6UJgtSbn5PXhH_LhHSo" style="width: 100%; height: 100%" :center="mapPoint" :zoom="19">
+                    <GoogleMap :api-key="GoogleMapKey" style="width: 100%; height: 100%" :center="mapPoint" :zoom="19">
                         <Marker :options="{ position: mapPoint }" />
                     </GoogleMap>
                 </div>
@@ -70,6 +70,7 @@ export default {
         let results = ref([]);
         let isModalOpen = ref(false);
         let modalTitle = ref("");
+        const GoogleMapKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
         const store = useStore();
 
         let mapPoint = ref({ lat: 40.689247, lng: -74.044502 });
@@ -112,7 +113,6 @@ export default {
         }
 
         function openMap(mapData) {
-            console.log(mapData);
             modalTitle.value = mapData.name;
             mapPoint.value = { lat: mapData.geometry.location.lat, lng: mapData.geometry.location.lng };
             isModalOpen.value = true;
@@ -126,7 +126,7 @@ export default {
             construct, fetchData,
             loading, openLoading, closeLoading, errorDisplay,
             render, results,
-            isModalOpen, openMap, closeMap, mapPoint, modalTitle
+            isModalOpen, openMap, closeMap, mapPoint, modalTitle, GoogleMapKey
         }
     }
 }
