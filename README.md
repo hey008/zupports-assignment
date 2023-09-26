@@ -37,5 +37,7 @@ php artisan serve
 npm run dev
 ```
 
+4. Open app in browser by using http://localhost:8000
+
 ---
 ***Project by:*** *[Jirawit Inkhao](https://github.com/hey008)*
