@@ -11,16 +11,16 @@
             class="form-control position-relative"
         />
         <div v-if="sourceText.length" @click="clearSearch" class="input-group-text small text-primary cursor-pointer">clear</div>
-        <div v-if="searchRecent.length" class="text-suggest">
-            <div>Recent Searches</div>
-            <div 
+        <ul v-if="searchRecent.length" class="text-suggest list-group">
+            <li class="list-group-item active">Recent Searches</li>
+            <li 
                 v-for="recent in searchRecent" 
                 :key="recent"
                 @click="selectRecent(recent)"
-                class="item">
+                class="list-group-item item">
                 {{ recent }}
-            </div>
-        </div>
+            </li>
+        </ul>
         <button class="btn btn-primary" @click="submitSearch()">Search</button>
     </div>
 </template>
