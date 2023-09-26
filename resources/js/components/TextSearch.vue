@@ -1,6 +1,7 @@
 <template>
     <div class="input-group sourceTextGroup">
         <input 
+            ref="textInput"
             type="text"
             placeholder="Type here..."
             v-model="sourceText"
@@ -9,7 +10,7 @@
             @keyup.enter="submitSearch" 
             class="form-control position-relative"
         />
-        <div v-if="sourceText.length" @click="sourceText = ''" class="input-group-text small text-primary cursor-pointer">clear</div>
+        <div v-if="sourceText.length" @click="clearSearch" class="input-group-text small text-primary cursor-pointer">clear</div>
         <div v-if="searchRecent.length" class="text-suggest">
             <div>Recent Searches</div>
             <div 
@@ -25,16 +26,26 @@
 </template>
 
 <script>
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, reactive, watch } from 'vue';
 import store from '../store';
 
 export default {
+    mounted () {
+        console.log('TextSearch Mounted.')
+        this.construct();
+    },
     setup() {
+        let textInput = ref(null);
         let sourceText = ref('');
         let sourceFocus = ref(false);
         const sourceRecents = reactive( 
             JSON.parse(localStorage.getItem('RecentSearch')) || [] 
         );
+
+        function construct() {
+            sourceText.value = "Bang Sue";
+            submitSearch();
+        }
 
         watch(sourceRecents, (newvalue) => {
             localStorage.setItem('RecentSearch', JSON.stringify(newvalue));
@@ -67,6 +78,12 @@ export default {
             setTimeout(() => { sourceFocus.value = false; }, 500);
         }
 
+        const clearSearch = () => {
+            sourceText.value = "";
+            textInput.value.focus();
+            sourceFocus.value = true;
+        }
+
         const submitSearch = () => {
             sourceFocus.value = false;
             store.commit('updateTextSearch', sourceText.value);
@@ -80,6 +97,8 @@ export default {
         }
 
         return { 
+            construct,
+            textInput,
             sourceText,
             searchRecent,
             sourceRecents,
@@ -87,7 +106,8 @@ export default {
             addRecentSearch,
             selectRecent,
             submitSearch,
-            closeSearch
+            closeSearch,
+            clearSearch
         }
     }
 }
