@@ -1,31 +1,31 @@
 <template>
-    <div class="flex-fill">
-        <div class="input-group">
-            <input 
-                type="text"
-                placeholder="Type here..."
-                v-model="sourceText"
-                @focus="sourceFocus = true"
-                @blur="closeSearch()"
-                class="form-control position-relative"
-            />
-            <div v-if="searchRecent.length" class="text-suggest">
-                <div>Recent Searches</div>
-                <div 
-                    v-for="recent in searchRecent" 
-                    :key="recent"
-                    @click="selectRecent(recent)"
-                    class="item">
-                    {{ recent }}
-                </div>
+    <div class="input-group">
+        <input 
+            type="text"
+            placeholder="Type here..."
+            v-model="sourceText"
+            @focus="sourceFocus = true"
+            @blur="closeSearch()"
+            @keyup.enter="submitSearch" 
+            class="form-control position-relative"
+        />
+        <div v-if="searchRecent.length" class="text-suggest">
+            <div>Recent Searches</div>
+            <div 
+                v-for="recent in searchRecent" 
+                :key="recent"
+                @click="selectRecent(recent)"
+                class="item">
+                {{ recent }}
             </div>
-            <button class="btn btn-primary" @click="submitSearch()">Search</button>
         </div>
+        <button class="btn btn-primary" @click="submitSearch()">Search</button>
     </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue'
+import store from '../store';
 
 export default {
     setup() {
@@ -35,7 +35,6 @@ export default {
         let sourceRecents = ['Bang Sue'];
 
         const searchRecent = computed(() => {
-            console.log(sourceFocus);
             if (sourceText.value === '' || sourceFocus.value === false) {
                 return [];
             }
@@ -55,6 +54,7 @@ export default {
         const selectRecent = (recent) => {
             sourceText.value = recent;
             sourceFocus.value = false;
+            submitSearch();
         }
 
         const closeSearch = () => {
@@ -62,7 +62,7 @@ export default {
         }
 
         const submitSearch = () => {
-
+            store.commit('updateTextSearch', sourceText.value);
         }
 
         return { 

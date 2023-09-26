@@ -6,7 +6,9 @@
         <div class="container-fluid d-flex flex-nowrap">
             <a class="navbar-brand d-block d-md-none">Z</a>
             <a class="navbar-brand d-none d-md-block">Zupports Assignment</a>
-            <TextSeatch />
+            <div class="ms-auto">
+                <TextSeatch />
+            </div>
         </div>
     </nav>
 
