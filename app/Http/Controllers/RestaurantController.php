@@ -25,7 +25,7 @@ class RestaurantController extends Controller
         try {
             $apiURL = "https://maps.googleapis.com/maps/api/place/textsearch/json";
             $apiURL .= "?language=en";
-            $apiURL .= "&key=". env('GOOGLE_MAP_API_KEY_BACKEND');
+            $apiURL .= "&key=". env('GOOGLE_MAP_API_KEY');
             $apiURL .= "&query=". $request->keyword;
             $apiURL .= "&type=restaurant";
             //$apiURL .= "&location=7.9099044%2C98.3876533";

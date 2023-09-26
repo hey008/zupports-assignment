@@ -30,7 +30,7 @@ export default {
         this.construct();
     },
     watch: { 
-        async textSearch(newval, oldval) {
+        textSearch(newval, oldval) {
             if (newval == "") {
                 this.render([]);
                 return ;
@@ -59,7 +59,7 @@ export default {
                 body: formdata,
             };
 
-            await fetch("http://localhost:8000/api/restaurant/search", requestOptions)
+            await fetch(import.meta.env.VITE_API_URL + "/api/restaurant/search", requestOptions)
                 .then(response => response.text())
                 .then(result => render(result))
                 .catch(error => console.log('error', error));
