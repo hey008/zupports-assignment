@@ -1,5 +1,5 @@
 <template>
-    <div class="input-group">
+    <div class="input-group sourceTextGroup">
         <input 
             type="text"
             placeholder="Type here..."
@@ -9,6 +9,7 @@
             @keyup.enter="submitSearch" 
             class="form-control position-relative"
         />
+        <div v-if="sourceText.length" @click="sourceText = ''" class="input-group-text small text-primary cursor-pointer">clear</div>
         <div v-if="searchRecent.length" class="text-suggest">
             <div>Recent Searches</div>
             <div 
@@ -24,15 +25,20 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import store from '../store';
 
 export default {
     setup() {
         let sourceText = ref('');
         let sourceFocus = ref(false);
-        let sourceRecentSelected = ref('');
-        let sourceRecents = ['Bang Sue'];
+        const sourceRecents = reactive( 
+            JSON.parse(localStorage.getItem('RecentSearch')) || [] 
+        );
+
+        watch(sourceRecents, (newvalue) => {
+            localStorage.setItem('RecentSearch', JSON.stringify(newvalue));
+        })
 
         const searchRecent = computed(() => {
             if (sourceText.value === '' || sourceFocus.value === false) {
@@ -62,7 +68,15 @@ export default {
         }
 
         const submitSearch = () => {
+            sourceFocus.value = false;
             store.commit('updateTextSearch', sourceText.value);
+            addRecentSearch(sourceText.value);
+        }
+
+        function addRecentSearch(txt) {
+            if(!sourceRecents.includes(txt)){
+                sourceRecents.push(txt);
+            }
         }
 
         return { 
@@ -70,7 +84,7 @@ export default {
             searchRecent,
             sourceRecents,
             sourceFocus,
-            sourceRecentSelected,
+            addRecentSearch,
             selectRecent,
             submitSearch,
             closeSearch
