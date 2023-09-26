@@ -39,3 +39,9 @@
         cursor: pointer;
     }
 }
+.modal{
+    &.show {
+        display: block;
+        background-color: #0000009D;
+    }
+}
