@@ -11,8 +11,12 @@ use Illuminate\Support\Str;
 
 class RestaurantController extends Controller
 {
+    /**
+     * Search restaurant by using Google Place API
+     */
     public function search(Request $request) {
 
+        # Validate keyword input
         $validator = Validator::make($request->all(), [
             'keyword' => 'required|max:255',
         ]);
@@ -24,8 +28,10 @@ class RestaurantController extends Controller
             ], 400);
         }
 
+        # Generate Cache key by convert keyword to slug format to avoid key broken by special characters
         $cacheKey = Str::slug($request->keyword);
 
+        # If cache is exist for this key then return cached result.
         if (Cache::has($cacheKey)) {
             return [
                 'status'=> 200,
@@ -35,20 +41,22 @@ class RestaurantController extends Controller
         }
 
         try {
+            # Set up Google API URL
             $apiURL = "https://maps.googleapis.com/maps/api/place/textsearch/json";
             $apiURL .= "?language=en";
             $apiURL .= "&key=". env('GOOGLE_MAP_API_KEY');
             $apiURL .= "&query=". $request->keyword;
             $apiURL .= "&type=restaurant";
-            //$apiURL .= "&location=7.9099044%2C98.3876533";
-            //$apiURL .= "&radius=5000";
             
+            # Start call Google API
             $response = Http::get($apiURL);
             
+            # Return expected result if request is successfully
             if ($response->successful()) {
                 $data = json_decode($response->body(), true);
 
                 if (isset($data['status']) && $data['status'] == "OK") {
+                    # Store API response in Laravel Cache
                     Cache::put($cacheKey, $data, env('CACHE_EXPIRED', now()->addMinutes(10)));
                     return [
                         'status'=> 200,
@@ -58,19 +66,17 @@ class RestaurantController extends Controller
                 }
             }
 
+            # If something went wrong return error as standard format
             return [
                 'status' => 500,
-                'errorMsg'=>"Keyword is required", 
+                'errorMsg'=>"Oop! Something went wrong", 
                 'errors' => $e->getMessage(),
             ];
         } catch (ConnectionException $e) {
-            $LOG->response = "ERROR";
-            $LOG->errors = $e->getMessage();
-            $LOG->save();
-
+            # If something went wrong return error as standard format
             return [
                 'status' => 500,
-                'errorMsg'=>"Keyword is required", 
+                'errorMsg'=>"Oop! Something went wrong", 
                 'errors' => $e->getMessage(),
             ];
         }

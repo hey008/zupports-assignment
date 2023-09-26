@@ -31,25 +31,31 @@ import store from '../store';
 
 export default {
     mounted () {
+        // Run this script for default value
         this.construct();
     },
     setup() {
         let textInput = ref(null);
         let sourceText = ref('');
         let sourceFocus = ref(false);
+
+        // Use LocalStorage for recent search display feature.
         const sourceRecents = reactive( 
             JSON.parse(localStorage.getItem('RecentSearch')) || [] 
         );
 
+        // Assign default value
         function construct() {
             sourceText.value = "Bang Sue";
             submitSearch();
         }
 
+        // Update LocalStorage when variable updated
         watch(sourceRecents, (newvalue) => {
             localStorage.setItem('RecentSearch', JSON.stringify(newvalue));
         })
 
+        // Return suggest items by filter recent search list from input
         const searchRecent = computed(() => {
             if (sourceText.value === '' || sourceFocus.value === false) {
                 return [];
@@ -67,28 +73,33 @@ export default {
             });
         });
 
+        // Update & Submit when clicked on suggest item
         const selectRecent = (recent) => {
             sourceText.value = recent;
             sourceFocus.value = false;
             submitSearch();
         }
 
+        // Close suggest box when click outside textbox
         const closeSearch = () => {
             setTimeout(() => { sourceFocus.value = false; }, 500);
         }
 
+        // Empty text in textbox
         const clearSearch = () => {
             sourceText.value = "";
             textInput.value.focus();
             sourceFocus.value = true;
         }
 
+        // Submit text to search 
         const submitSearch = () => {
             sourceFocus.value = false;
             store.commit('updateTextSearch', sourceText.value);
             addRecentSearch(sourceText.value);
         }
 
+        // Add new item in recen search
         function addRecentSearch(txt) {
             if(!sourceRecents.includes(txt)){
                 sourceRecents.push(txt);

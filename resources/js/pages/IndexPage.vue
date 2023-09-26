@@ -57,9 +57,11 @@ export default {
         ...mapGetters(["textSearch"])
     },
     mounted() {
+        // Run this script for default render
         this.construct();
     },
     watch: { 
+        // If Keyword update fetch data and rerender result.
         textSearch(newval, oldval) {
             if (newval == "") {
                 this.render([]);
@@ -75,15 +77,18 @@ export default {
         let results = ref([]);
         let isModalOpen = ref(false);
         let modalTitle = ref("");
-        const GoogleMapKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+
         const store = useStore();
 
+        const GoogleMapKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
         let mapPoint = ref({ lat: 40.689247, lng: -74.044502 });
 
+        // Start fetchdata when component is ready
         function construct () {
             fetchData(store.state.textSearch);
         }
 
+        // Fetch and Render data
         async function fetchData(txt) {
             errorDisplay.value = false;
 
@@ -105,8 +110,13 @@ export default {
             closeLoading();
         }
 
+        // Display Loading Message 
         function openLoading() { results.value = []; loading.value = true; }
+
+        // Close Loading Message
         function closeLoading() { loading.value = false; }
+
+        // Render Card from API fetch results
         function render(response) {
             if (response.length === 0) {
                 results.value = [];
@@ -117,12 +127,14 @@ export default {
             results.value = jsonResponse.data.results;
         }
 
+        // Open Map modal when click "Open Map" button 
         function openMap(mapData) {
             modalTitle.value = mapData.name;
             mapPoint.value = { lat: mapData.geometry.location.lat, lng: mapData.geometry.location.lng };
             isModalOpen.value = true;
         }
 
+        // Close Map modal
         function closeMap() {
             isModalOpen.value = false;
         }
