@@ -1,6 +1,11 @@
 # Zupports Assignment
 
-__SET UP ENVIRONMENT__
+__Assignment:__
+
+Create a simple __Responsive__ web application to show the list of __Restaurant__ by using Google Map API which users can enter a keyword to search, default the keyword to __Bang Sue__.
+
+
+## ENVIRONMENT SET UP ##
 
 1. Set up '.env' file.
 ```bash
@@ -38,6 +43,9 @@ npm run dev
 ```
 
 4. Open app in browser by using http://localhost:8000
+
+## SAMPLE
+![Screenshot](sample.gif)
 
 ---
 ***Project by:*** *[Jirawit Inkhao](https://github.com/hey008)*
